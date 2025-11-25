@@ -259,7 +259,7 @@ def api_info():
     API信息
     """
     return jsonify({
-        'message': 'Quartz UI - Scheduled Jobs Platform',
+        'message': 'Scheduler UI - Scheduled Jobs Platform',
         'endpoints': {
             'create_job': 'POST /jobs',
             'list_jobs': 'GET /jobs',

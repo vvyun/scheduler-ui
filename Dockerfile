@@ -1,5 +1,5 @@
 # 使用官方Python运行时作为基础镜像
-FROM swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/python:3.10-alpine
+FROM python:3.10-alpine
 
 # 设置工作目录
 WORKDIR /app

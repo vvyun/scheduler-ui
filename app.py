@@ -3,8 +3,6 @@ from flask import Flask, request, jsonify, render_template
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from apscheduler.executors.pool import ThreadPoolExecutor
-from apscheduler.util import obj_to_ref, ref_to_obj
-from datetime import datetime
 import subprocess
 import requests
 import logging
@@ -20,7 +18,7 @@ app = Flask(__name__,
 
 # 配置数据库路径
 basedir = os.path.abspath(os.path.dirname(__file__))
-db_path = os.path.join(basedir, 'jobs.sqlite')
+db_path = os.path.join(basedir, 'data/jobs.sqlite')
 
 # APScheduler配置
 jobstores = {

@@ -1,4 +1,4 @@
-# Quartz UI - 定时任务平台
+# Scheduler-UI - 定时任务平台
 
 一个基于Python的定时任务管理平台，支持创建和管理定时任务。
 

@@ -10,6 +10,11 @@
 - 提供RESTful API接口
 - 可视化Web管理界面
 
+## UI界面
+
+![alt text](img/image-home.png)
+![alt text](img/image-info.png)
+![alt text](img/image-add.png)
 ## 技术栈
 
 - Python 3.x

@@ -1,0 +1,39 @@
+# Python相关
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+.coverage
+.pytest_cache
+.coverage.*
+.git
+.gitignore
+
+# Virtual Environment
+.venv
+venv
+env
+ENV
+
+# IDE相关
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS generated files
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+
+# Database
+*.sqlite
+*.db
+
+# Docker
+Dockerfile*
+.dockerignore

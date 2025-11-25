@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="header">
+    <h1>Quartz UI - 定时任务管理平台</h1>
+    <button id="create-job-btn" class="btn">创建任务</button>
+</div>
+
+<div class="search-container">
+    <div class="form-group">
+        <label for="search-job-id">任务ID查询:</label>
+        <input type="text" id="search-job-id" placeholder="输入任务ID进行模糊查询">
+        <button id="search-btn" class="btn">查询</button>
+        <button id="clear-search-btn" class="btn">清除查询</button>
+    </div>
+</div>
+
+<div class="job-list-container">
+    <h2>任务列表</h2>
+    <table id="jobs-table">
+        <thead>
+            <tr>
+                <th>任务ID</th>
+                <th>任务类型</th>
+                <th>下次执行时间</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 任务列表将通过JavaScript动态加载 -->
+        </tbody>
+    </table>
+</div>
+
+<!-- 创建任务模态框 -->
+<div id="create-job-modal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>创建新的定时任务</h2>
+        <form id="create-job-form">
+            <div class="form-group">
+                <label for="job-id">任务ID:</label>
+                <input type="text" id="job-id" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="job-type">任务类型:</label>
+                <select id="job-type" required>
+                    <option value="">请选择任务类型</option>
+                    <option value="shell">Shell脚本</option>
+                    <option value="http">HTTP请求</option>
+                </select>
+            </div>
+            
+            <!-- Shell任务表单 -->
+            <div id="shell-job-form" class="hidden">
+                <div class="form-group">
+                    <label for="shell-command">Shell命令:</label>
+                    <textarea id="shell-command" rows="3" placeholder="例如: echo 'Hello World'"></textarea>
+                </div>
+            </div>
+            
+            <!-- HTTP任务表单 -->
+            <div id="http-job-form" class="hidden">
+                <div class="form-group">
+                    <label for="http-url">URL:</label>
+                    <input type="url" id="http-url" placeholder="例如: https://api.example.com/data">
+                </div>
+                
+                <div class="form-group">
+                    <label for="http-method">HTTP方法:</label>
+                    <select id="http-method">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                        <option value="DELETE">DELETE</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="http-headers">请求头 (JSON格式):</label>
+                    <textarea id="http-headers" rows="3" placeholder='例如: {"Authorization": "Bearer token"}'></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="http-body">请求体:</label>
+                    <textarea id="http-body" rows="3"></textarea>
+                </div>
+            </div>
+            
+            <h3>调度设置</h3>
+            <div class="form-group">
+                <label for="schedule-second">秒 (0-59):</label>
+                <input type="text" id="schedule-second" placeholder="例如: */10 表示每10秒执行一次">
+            </div>
+            
+            <div class="form-group">
+                <label for="schedule-minute">分钟 (0-59):</label>
+                <input type="text" id="schedule-minute" placeholder="例如: */5 表示每5分钟执行一次">
+            </div>
+            
+            <div class="form-group">
+                <label for="schedule-hour">小时 (0-23):</label>
+                <input type="text" id="schedule-hour" placeholder="例如: 9 表示每天9点执行">
+            </div>
+            
+            <div class="form-group">
+                <label for="schedule-day">日期 (1-31):</label>
+                <input type="text" id="schedule-day">
+            </div>
+            
+            <div class="form-group">
+                <label for="schedule-month">月份 (1-12):</label>
+                <input type="text" id="schedule-month">
+            </div>
+            
+            <div class="form-group">
+                <label for="schedule-day-of-week">星期几 (0-6 或 mon-sun):</label>
+                <input type="text" id="schedule-day-of-week">
+            </div>
+            
+            <button type="submit" class="btn">创建任务</button>
+        </form>
+    </div>
+</div>
+
+<!-- 任务详情模态框 -->
+<div id="job-detail-modal" class="modal hidden">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>任务详情</h2>
+        <div id="job-detail-content"></div>
+    </div>
+</div>
+
+<style>
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.search-container {
+    margin-bottom: 20px;
+}
+
+.search-container .form-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-container .form-group label {
+    font-weight: bold;
+}
+
+.search-container .form-group input {
+    flex: 1;
+    max-width: 300px;
+}
+
+.job-list-container {
+    margin-top: 20px;
+}
+
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 5px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+}
+
+.job-detail-item {
+    margin-bottom: 10px;
+}
+
+.job-detail-label {
+    font-weight: bold;
+    display: inline-block;
+    width: 120px;
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    .search-container .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .search-container .form-group input {
+        max-width: 100%;
+    }
+}
+</style>
+{% endblock %}
